@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>보고서 편집 · report-builder-hwpx</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --panel:#fff; --line:#e3e6ea; --ink:#1f2430; --sub:#6b7280;
+    --accent:#2563eb; --ok:#16a34a; --bad:#dc2626; --warn:#d97706;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+       background:var(--bg);color:var(--ink);font-size:15px}
+  header{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px;
+         padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+  header h1{font-size:16px;margin:0;flex:0 0 auto}
+  header .topic{color:var(--sub);font-size:13px}
+  header .spacer{flex:1}
+  button{font:inherit;border:1px solid var(--line);background:#fff;color:var(--ink);
+         padding:8px 14px;border-radius:8px;cursor:pointer}
+  button:hover{background:#f0f2f5}
+  button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  button.primary:hover{filter:brightness(1.05)}
+  .status{font-size:12px;color:var(--sub);min-width:90px}
+  .wrap{display:grid;grid-template-columns:1fr 420px;gap:0;height:calc(100vh - 57px)}
+  .doc{overflow:auto;padding:24px 28px}
+  .side{overflow:auto;border-left:1px solid var(--line);background:var(--panel);padding:18px 20px}
+  .toc{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+       padding:12px 16px;margin-bottom:20px}
+  .toc b{font-size:13px;color:var(--sub)}
+  .toc ul{margin:6px 0 0;padding-left:18px}
+  .toc li{margin:2px 0;font-size:14px}
+  .section{margin-bottom:22px}
+  .heading{font-size:17px;font-weight:700;padding:4px 6px;border-radius:6px;outline:none}
+  .heading:focus{background:#eef3ff}
+  .block{display:flex;gap:8px;margin:8px 0;padding:8px 10px;border-radius:8px;
+         border:1px solid transparent}
+  .block:hover{background:#fafbfc}
+  .block.active{background:#eef3ff;border-color:#c7d7ff}
+  .block .mark{color:var(--accent);font-weight:700;flex:0 0 auto}
+  .block .text{flex:1;outline:none;line-height:1.6}
+  .block .text:focus{background:#fff}
+  .footnote{margin:-2px 0 6px 34px;font-size:12px;color:var(--sub);line-height:1.5}
+  .footnote a{color:var(--accent);text-decoration:none}
+  .footnote a:hover{text-decoration:underline}
+  .entities{margin:0 0 8px 34px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+  .entities .lbl{font-size:11px;color:var(--sub);margin-right:2px}
+  .chip{font-size:11px;padding:1px 8px;border-radius:10px;border:1px solid var(--line);color:var(--sub);cursor:help}
+  .chip.match{color:var(--ok);border-color:#bbf7d0;background:#f0fdf4}
+  .chip.mismatch{color:var(--bad);border-color:#fecaca;background:#fef2f2;font-weight:700}
+  .chip.unverified{color:var(--warn);border-color:#fde68a;background:#fffbeb}
+  .badge{flex:0 0 auto;align-self:flex-start;font-size:11px;padding:2px 7px;border-radius:20px;
+         border:1px solid var(--line);color:var(--sub);white-space:nowrap}
+  .badge.match{color:var(--ok);border-color:#bbf7d0;background:#f0fdf4}
+  .badge.mismatch{color:var(--bad);border-color:#fecaca;background:#fef2f2}
+  .badge.unchecked{color:var(--warn);border-color:#fde68a;background:#fffbeb}
+  .side h2{font-size:14px;margin:0 0 12px}
+  .src{border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:14px}
+  .src .type{font-size:11px;text-transform:uppercase;color:var(--sub);letter-spacing:.04em}
+  .src .title{font-weight:600;margin:4px 0;font-size:14px}
+  .src a{color:var(--accent);font-size:12px;word-break:break-all}
+  .src .excerpt{margin-top:8px;font-size:13px;color:#374151;background:#f8fafc;
+                border:1px solid var(--line);border-radius:6px;padding:8px;line-height:1.55;outline:none}
+  .src .cmp{margin-top:8px;font-size:12px;color:var(--sub)}
+  .src .cmp .drafted{color:var(--ink);background:#eef3ff;border-radius:4px;padding:2px 4px}
+  .vbtns{display:flex;gap:6px;margin-top:10px}
+  .vbtns button{padding:5px 10px;font-size:12px}
+  .vbtns button.sel-match{background:var(--ok);color:#fff;border-color:var(--ok)}
+  .vbtns button.sel-bad{background:var(--bad);color:#fff;border-color:var(--bad)}
+  .empty{color:var(--sub);font-size:13px;padding:20px 0;text-align:center}
+  .hint{font-size:12px;color:var(--sub);margin-bottom:14px;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+  <h1>📄 보고서 편집</h1>
+  <span class="topic" id="topicLabel"></span>
+  <span class="spacer"></span>
+  <span class="status" id="status"></span>
+  <button id="saveBtn">💾 저장</button>
+  <button class="primary" id="hwpBtn">⬇ HWP</button>
+</header>
+
+<div class="wrap">
+  <div class="doc">
+    <div class="toc"><b>목차</b><ul id="toc"></ul></div>
+    <div id="sections"></div>
+  </div>
+  <div class="side">
+    <h2>출처 · 원문 대조</h2>
+    <div class="hint">왼쪽 문장을 클릭하면 그 문장이 사용한 출처와 원문이 여기 표시됩니다.
+      원문과 작성 내용을 비교해 <b>일치 / 불일치</b>를 표시하세요.</div>
+    <div id="sidebody"><div class="empty">문장을 선택하세요</div></div>
+  </div>
+</div>
+
+<script>
+let R = null;            // report 객체
+let activeBlock = null;  // 현재 선택된 블록 id
+
+function setStatus(t){ document.getElementById('status').textContent = t; }
+
+function srcById(id){ return (R.sources||[]).find(s=>s.id===id); }
+
+function render(){
+  document.getElementById('topicLabel').textContent =
+     (R.title||'') + '  ·  ' + (R.date||'');
+  // TOC
+  const toc = document.getElementById('toc'); toc.innerHTML='';
+  (R.toc||[]).forEach(t=>{const li=document.createElement('li');li.textContent=t;toc.appendChild(li);});
+  // sections
+  const host = document.getElementById('sections'); host.innerHTML='';
+  (R.sections||[]).forEach(sec=>{
+    const sd=document.createElement('div'); sd.className='section';
+    const h=document.createElement('div'); h.className='heading'; h.contentEditable=true;
+    h.textContent=sec.heading||'';
+    h.addEventListener('input',()=>{sec.heading=h.textContent;dirty();});
+    sd.appendChild(h);
+    (sec.blocks||[]).forEach(b=>{
+      const bd=document.createElement('div'); bd.className='block'; bd.dataset.id=b.id;
+      const badge=verifyBadge(b);
+      bd.innerHTML='<span class="mark">□</span>';
+      const tx=document.createElement('div'); tx.className='text'; tx.contentEditable=true;
+      tx.textContent=b.text||'';
+      tx.addEventListener('input',()=>{b.text=tx.textContent;dirty();});
+      bd.addEventListener('click',()=>selectBlock(b.id));
+      bd.appendChild(tx); bd.appendChild(badge);
+      sd.appendChild(bd);
+      // 각주식: 문장 바로 밑에 출처 줄(하이퍼링크) 표시 — 출력 문서와 동일
+      (b.sources||[]).forEach(sid=>{
+        const s=srcById(sid); if(!s)return;
+        const fn=document.createElement('div'); fn.className='footnote';
+        fn.innerHTML='- '+esc(s.source||'')+', "'+esc(s.title||'')+'" '+
+          '<a href="'+esc(s.url||'')+'" target="_blank" rel="noopener">(Link)</a>';
+        sd.appendChild(fn);
+      });
+      // 고유명사·숫자 검증: 회사·인물·날짜·금액·수치를 색으로 표시
+      if((b.entities||[]).length){
+        const ent=document.createElement('div'); ent.className='entities';
+        const lb=document.createElement('span'); lb.className='lbl'; lb.textContent='🔍'; ent.appendChild(lb);
+        b.entities.forEach(e=>{
+          const c=document.createElement('span'); c.className='chip '+(e.status||'unverified');
+          const tip={match:'원문 일치',mismatch:'원문과 다름',unverified:'확인 필요'}[e.status||'unverified'];
+          c.title='['+(e.kind||'')+'] '+tip+(e.sourceValue?(' · 원문: '+e.sourceValue):'');
+          c.textContent=e.text;
+          ent.appendChild(c);
+        });
+        sd.appendChild(ent);
+      }
+    });
+    host.appendChild(sd);
+  });
+}
+
+function verifyBadge(b){
+  const span=document.createElement('span');
+  // 블록의 출처 검증 + 고유명사·숫자 검증 중 최악 상태로 배지 결정
+  const states=(b.sources||[]).map(id=>(srcById(id)||{}).verifyStatus||'unchecked');
+  const ents=(b.entities||[]).map(e=>e.status||'unverified');
+  let st='unchecked';
+  if(states.includes('mismatch')||ents.includes('mismatch')) st='mismatch';
+  else if(states.length && states.every(s=>s==='match')) st='match';
+  const label={match:'✓ 일치',mismatch:'✗ 불일치',unchecked:'· 미확인'}[st];
+  span.className='badge '+st; span.textContent=label;
+  return span;
+}
+
+function selectBlock(id){
+  activeBlock=id;
+  document.querySelectorAll('.block').forEach(el=>
+     el.classList.toggle('active', el.dataset.id===id));
+  renderSide(id);
+}
+
+function renderSide(blockId){
+  const host=document.getElementById('sidebody'); host.innerHTML='';
+  let block=null;
+  (R.sections||[]).forEach(s=>(s.blocks||[]).forEach(b=>{if(b.id===blockId)block=b;}));
+  if(!block){host.innerHTML='<div class="empty">문장을 선택하세요</div>';return;}
+  if(!(block.sources||[]).length){
+    host.innerHTML='<div class="empty">이 문장에 연결된 출처가 없습니다</div>';return;}
+  block.sources.forEach(sid=>{
+    const s=srcById(sid); if(!s)return;
+    const card=document.createElement('div'); card.className='src';
+    card.innerHTML=
+      '<div class="type">'+(s.type||'')+' · '+(s.source||'')+'</div>'+
+      '<div class="title">'+esc(s.title||'')+'</div>'+
+      '<a href="'+esc(s.url||'')+'" target="_blank" rel="noopener">'+esc(s.url||'')+'</a>'+
+      '<div class="cmp">작성 내용: <span class="drafted">'+esc(block.text||'')+'</span></div>'+
+      '<div style="font-size:12px;color:#6b7280;margin-top:8px">원문 발췌 (직접 수정 가능):</div>';
+    const ex=document.createElement('div'); ex.className='excerpt'; ex.contentEditable=true;
+    ex.textContent=s.originalExcerpt||'(원문 미수집)';
+    ex.addEventListener('input',()=>{s.originalExcerpt=ex.textContent;dirty();});
+    card.appendChild(ex);
+    const vb=document.createElement('div'); vb.className='vbtns';
+    const bm=mkVbtn('✓ 일치',()=>{s.verifyStatus='match';afterVerify();},s.verifyStatus==='match'?'sel-match':'');
+    const bx=mkVbtn('✗ 불일치',()=>{s.verifyStatus='mismatch';afterVerify();},s.verifyStatus==='mismatch'?'sel-bad':'');
+    vb.appendChild(bm); vb.appendChild(bx); card.appendChild(vb);
+    host.appendChild(card);
+  });
+}
+function mkVbtn(label,fn,cls){const b=document.createElement('button');b.textContent=label;
+  if(cls)b.className=cls;b.addEventListener('click',fn);return b;}
+function afterVerify(){dirty();render();selectBlock(activeBlock);}
+
+function esc(t){return String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+let dirtyTimer=null;
+function dirty(){setStatus('● 저장 안 됨');}
+
+async function load(){
+  R=await (await fetch('/api/report')).json();
+  render(); setStatus('불러옴');
+}
+document.getElementById('saveBtn').addEventListener('click',async()=>{
+  setStatus('저장 중…');
+  await fetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json'},
+     body:JSON.stringify(R)});
+  setStatus('✓ 저장됨');
+});
+document.getElementById('hwpBtn').addEventListener('click',async()=>{
+  setStatus('HWPX 생성 중…');
+  const res=await fetch('/api/export',{method:'POST',
+     headers:{'Content-Type':'application/json'},body:JSON.stringify(R)});
+  if(!res.ok){const e=await res.json().catch(()=>({}));
+     setStatus('✗ 실패'); alert('내보내기 실패:\n'+(e.error||res.status));return;}
+  const blob=await res.blob();
+  const cd=res.headers.get('Content-Disposition')||'';
+  const m=cd.match(/filename="?([^"]+)"?/);
+  const name=m?decodeURIComponent(m[1]):'report.hwpx';
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=name; a.click(); URL.revokeObjectURL(a.href);
+  setStatus('✓ 다운로드 완료');
+});
+load();
+</script>
+</body>
+</html>

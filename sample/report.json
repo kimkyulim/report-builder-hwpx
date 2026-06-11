@@ -1,0 +1,88 @@
+{
+  "title": "휴머노이드 로봇 분야 국내외 동향",
+  "topic": "휴머노이드",
+  "date": "26.06.11",
+  "department": "기술기획팀",
+  "toc": [
+    "1. 개요",
+    "2. 주요 기업 동향",
+    "3. 기술 동향"
+  ],
+  "sections": [
+    {
+      "id": "s1",
+      "heading": "1. 개요",
+      "blocks": [
+        {
+          "id": "b1",
+          "text": "글로벌 휴머노이드 로봇 시장은 2025년 들어 양산 단계 진입을 선언한 기업이 늘며 경쟁이 본격화되는 중",
+          "sources": ["src1"]
+        },
+        {
+          "id": "b2",
+          "text": "보행·전신제어(whole-body control) 알고리즘과 저비용 액추에이터가 상용화의 핵심 과제로 부상",
+          "sources": ["src3"]
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "heading": "2. 주요 기업 동향",
+      "blocks": [
+        {
+          "id": "b3",
+          "text": "Tesla, Optimus 차세대 모델의 공장 내 자율 작업 시연을 공개하고 2026년 제한적 양산 목표를 재확인",
+          "sources": ["src1"]
+        },
+        {
+          "id": "b4",
+          "text": "Figure AI, 대규모 투자 유치 후 BMW 생산라인 파일럿 배치를 확대하는 중",
+          "sources": ["src2"]
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "heading": "3. 기술 동향",
+      "blocks": [
+        {
+          "id": "b5",
+          "text": "강화학습 기반 보행 정책을 실제 하드웨어로 직접 이전(sim-to-real)하는 연구가 안정성·일반화 측면에서 진전",
+          "sources": ["src3"]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "src1",
+      "type": "news",
+      "source": "Tesla",
+      "title": "Tesla shows new Optimus performing autonomous factory tasks",
+      "url": "https://www.example-news.com/tesla-optimus-2026",
+      "date": "2026-06-09",
+      "originalExcerpt": "Tesla unveiled its latest Optimus humanoid performing autonomous tasks on a factory floor, reaffirming a target of limited production in 2026.",
+      "verifyStatus": "unchecked"
+    },
+    {
+      "id": "src2",
+      "type": "news",
+      "source": "Figure AI",
+      "title": "Figure AI expands BMW line pilot after funding round",
+      "url": "https://www.example-news.com/figure-bmw-pilot",
+      "date": "2026-06-07",
+      "originalExcerpt": "Following a large funding round, Figure AI is expanding the pilot deployment of its humanoid robots on a BMW production line.",
+      "verifyStatus": "unchecked"
+    },
+    {
+      "id": "src3",
+      "type": "paper",
+      "source": "arXiv",
+      "title": "Sim-to-Real Transfer of Whole-Body Locomotion Policies",
+      "url": "https://arxiv.org/abs/2606.00000",
+      "date": "2026-06-05",
+      "originalExcerpt": "We present a reinforcement-learning locomotion policy transferred directly to hardware, improving stability and generalization across terrains.",
+      "verifyStatus": "unchecked"
+    }
+  ]
+}

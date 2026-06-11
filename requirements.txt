@@ -1,0 +1,5 @@
+# report-builder-hwpx 의존성
+# (hwpx 스킬과 공유되는 lxml은 그 스킬에서 이미 설치됨)
+flask>=3.0
+lxml>=4.6
+requests>=2.28
