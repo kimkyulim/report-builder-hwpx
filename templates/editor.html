@@ -23,21 +23,35 @@
   button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
   button.primary:hover{filter:brightness(1.05)}
   .status{font-size:12px;color:var(--sub);min-width:90px}
+  /* 커버리지 배지 */
+  .coverage{font-size:12px;padding:3px 10px;border-radius:12px;background:#f0f2f5;
+            font-weight:600;white-space:nowrap;transition:background .2s,color .2s}
+  /* 필터 바 */
+  .filterbar{display:flex;gap:6px;align-items:center;margin-bottom:16px}
+  .filterbar .flbl{font-size:12px;color:var(--sub);margin-right:2px}
+  .filter-btn{padding:4px 12px;font-size:12px;border-radius:16px}
+  .filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .filter-btn.active:hover{filter:brightness(1.05);background:var(--accent)}
+  /* 레이아웃 */
   .wrap{display:grid;grid-template-columns:1fr 420px;gap:0;height:calc(100vh - 57px)}
   .doc{overflow:auto;padding:24px 28px}
   .side{overflow:auto;border-left:1px solid var(--line);background:var(--panel);padding:18px 20px}
   .toc{background:var(--panel);border:1px solid var(--line);border-radius:10px;
-       padding:12px 16px;margin-bottom:20px}
+       padding:12px 16px;margin-bottom:12px}
   .toc b{font-size:13px;color:var(--sub)}
   .toc ul{margin:6px 0 0;padding-left:18px}
   .toc li{margin:2px 0;font-size:14px}
   .section{margin-bottom:22px}
   .heading{font-size:17px;font-weight:700;padding:4px 6px;border-radius:6px;outline:none}
   .heading:focus{background:#eef3ff}
-  .block{display:flex;gap:8px;margin:8px 0;padding:8px 10px;border-radius:8px;
+  .block-group{margin:8px 0}
+  .block{display:flex;gap:8px;padding:8px 10px;border-radius:8px;
          border:1px solid transparent}
   .block:hover{background:#fafbfc}
   .block.active{background:#eef3ff;border-color:#c7d7ff}
+  /* 미확인 블록 강조: 왼쪽 주황 테두리 */
+  .block-group.unchecked .block{border-left:3px solid var(--warn)}
+  .block-group.mismatch .block{border-left:3px solid var(--bad)}
   .block .mark{color:var(--accent);font-weight:700;flex:0 0 auto}
   .block .text{flex:1;outline:none;line-height:1.6}
   .block .text:focus{background:#fff}
@@ -70,6 +84,7 @@
   .vbtns button.sel-bad{background:var(--bad);color:#fff;border-color:var(--bad)}
   .empty{color:var(--sub);font-size:13px;padding:20px 0;text-align:center}
   .hint{font-size:12px;color:var(--sub);margin-bottom:14px;line-height:1.5}
+  .no-results{color:var(--sub);font-size:13px;padding:12px 0;text-align:center}
 </style>
 </head>
 <body>
@@ -77,6 +92,7 @@
   <h1>📄 보고서 편집</h1>
   <span class="topic" id="topicLabel"></span>
   <span class="spacer"></span>
+  <span class="coverage" id="coverage">커버리지 —</span>
   <span class="status" id="status"></span>
   <button id="saveBtn">💾 저장</button>
   <button class="primary" id="hwpBtn">⬇ HWP</button>
@@ -85,6 +101,13 @@
 <div class="wrap">
   <div class="doc">
     <div class="toc"><b>목차</b><ul id="toc"></ul></div>
+    <div class="filterbar">
+      <span class="flbl">필터:</span>
+      <button class="filter-btn active" data-filter="all">전체</button>
+      <button class="filter-btn" data-filter="match">✓ 일치</button>
+      <button class="filter-btn" data-filter="mismatch">✗ 불일치</button>
+      <button class="filter-btn" data-filter="unchecked">· 미확인</button>
+    </div>
     <div id="sections"></div>
   </div>
   <div class="side">
@@ -96,20 +119,46 @@
 </div>
 
 <script>
-let R = null;            // report 객체
-let activeBlock = null;  // 현재 선택된 블록 id
+let R = null;
+let activeBlock = null;
+let currentFilter = 'all';
 
 function setStatus(t){ document.getElementById('status').textContent = t; }
 
 function srcById(id){ return (R.sources||[]).find(s=>s.id===id); }
 
+function blockStatus(b){
+  const states=(b.sources||[]).map(id=>(srcById(id)||{}).verifyStatus||'unchecked');
+  const ents=(b.entities||[]).map(e=>e.status||'unverified');
+  if(states.includes('mismatch')||ents.includes('mismatch')) return 'mismatch';
+  if(states.length && states.every(s=>s==='match')) return 'match';
+  return 'unchecked';
+}
+
+function updateCoverage(){
+  let total=0, matched=0, mismatched=0;
+  (R.sections||[]).forEach(sec=>(sec.blocks||[]).forEach(b=>{
+    total++;
+    const st=blockStatus(b);
+    if(st==='match') matched++;
+    else if(st==='mismatch') mismatched++;
+  }));
+  const verified=matched+mismatched;
+  const pct=total>0?Math.round(verified/total*100):0;
+  const el=document.getElementById('coverage');
+  if(!el) return;
+  el.textContent=`검증 ${verified}/${total} (${pct}%)`;
+  if(pct>=70){ el.style.background='#dcfce7'; el.style.color='var(--ok)'; }
+  else if(pct>=40){ el.style.background='#fef9c3'; el.style.color='var(--warn)'; }
+  else { el.style.background='#fee2e2'; el.style.color='var(--bad)'; }
+}
+
 function render(){
   document.getElementById('topicLabel').textContent =
      (R.title||'') + '  ·  ' + (R.date||'');
-  // TOC
   const toc = document.getElementById('toc'); toc.innerHTML='';
   (R.toc||[]).forEach(t=>{const li=document.createElement('li');li.textContent=t;toc.appendChild(li);});
-  // sections
+
   const host = document.getElementById('sections'); host.innerHTML='';
   (R.sections||[]).forEach(sec=>{
     const sd=document.createElement('div'); sd.className='section';
@@ -117,7 +166,20 @@ function render(){
     h.textContent=sec.heading||'';
     h.addEventListener('input',()=>{sec.heading=h.textContent;dirty();});
     sd.appendChild(h);
+
+    let visibleCount=0;
     (sec.blocks||[]).forEach(b=>{
+      const st=blockStatus(b);
+      const grp=document.createElement('div');
+      grp.className='block-group '+st;
+      grp.dataset.blockId=b.id;
+
+      if(currentFilter!=='all' && st!==currentFilter){
+        grp.style.display='none';
+      } else {
+        visibleCount++;
+      }
+
       const bd=document.createElement('div'); bd.className='block'; bd.dataset.id=b.id;
       const badge=verifyBadge(b);
       bd.innerHTML='<span class="mark">□</span>';
@@ -126,16 +188,16 @@ function render(){
       tx.addEventListener('input',()=>{b.text=tx.textContent;dirty();});
       bd.addEventListener('click',()=>selectBlock(b.id));
       bd.appendChild(tx); bd.appendChild(badge);
-      sd.appendChild(bd);
-      // 각주식: 문장 바로 밑에 출처 줄(하이퍼링크) 표시 — 출력 문서와 동일
+      grp.appendChild(bd);
+
       (b.sources||[]).forEach(sid=>{
         const s=srcById(sid); if(!s)return;
         const fn=document.createElement('div'); fn.className='footnote';
         fn.innerHTML='- '+esc(s.source||'')+', "'+esc(s.title||'')+'" '+
           '<a href="'+esc(s.url||'')+'" target="_blank" rel="noopener">(Link)</a>';
-        sd.appendChild(fn);
+        grp.appendChild(fn);
       });
-      // 고유명사·숫자 검증: 회사·인물·날짜·금액·수치를 색으로 표시
+
       if((b.entities||[]).length){
         const ent=document.createElement('div'); ent.className='entities';
         const lb=document.createElement('span'); lb.className='lbl'; lb.textContent='🔍'; ent.appendChild(lb);
@@ -146,16 +208,34 @@ function render(){
           c.textContent=e.text;
           ent.appendChild(c);
         });
-        sd.appendChild(ent);
+        grp.appendChild(ent);
       }
+
+      sd.appendChild(grp);
     });
+
+    // 필터 적용 시 표시할 블록 없으면 섹션 접기
+    if(currentFilter!=='all' && visibleCount===0){
+      sd.style.display='none';
+    }
     host.appendChild(sd);
   });
+
+  // 필터 적용 중이고 전체 결과가 없으면 안내
+  if(currentFilter!=='all'){
+    const anyVisible=[...host.querySelectorAll('.block-group')].some(g=>g.style.display!=='none');
+    if(!anyVisible){
+      const msg=document.createElement('div'); msg.className='no-results';
+      msg.textContent='해당 상태의 블록이 없습니다.';
+      host.appendChild(msg);
+    }
+  }
+
+  updateCoverage();
 }
 
 function verifyBadge(b){
   const span=document.createElement('span');
-  // 블록의 출처 검증 + 고유명사·숫자 검증 중 최악 상태로 배지 결정
   const states=(b.sources||[]).map(id=>(srcById(id)||{}).verifyStatus||'unchecked');
   const ents=(b.entities||[]).map(e=>e.status||'unverified');
   let st='unchecked';
@@ -206,13 +286,13 @@ function afterVerify(){dirty();render();selectBlock(activeBlock);}
 
 function esc(t){return String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
-let dirtyTimer=null;
 function dirty(){setStatus('● 저장 안 됨');}
 
 async function load(){
   R=await (await fetch('/api/report')).json();
   render(); setStatus('불러옴');
 }
+
 document.getElementById('saveBtn').addEventListener('click',async()=>{
   setStatus('저장 중…');
   await fetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json'},
@@ -233,6 +313,17 @@ document.getElementById('hwpBtn').addEventListener('click',async()=>{
   a.download=name; a.click(); URL.revokeObjectURL(a.href);
   setStatus('✓ 다운로드 완료');
 });
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter=btn.dataset.filter;
+    render();
+    if(activeBlock) selectBlock(activeBlock);
+  });
+});
+
 load();
 </script>
 </body>
