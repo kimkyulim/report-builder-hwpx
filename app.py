@@ -16,6 +16,7 @@
 """
 import argparse
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -68,9 +69,16 @@ def api_export():
 
     out_dir = SKILL_DIR / "output"
     out_dir.mkdir(exist_ok=True)
-    topic = (data.get("topic") or "report").replace(" ", "_")
-    date = (data.get("date") or "").replace(".", "")
-    out_path = out_dir / f"{date}_{topic}.hwpx"
+    raw_title = data.get("title") or data.get("topic") or "report"
+    title_slug = re.sub(r'[\\/:*?"<>|]', '_', raw_title).strip()
+    existing = list(out_dir.glob(f"{re.escape(title_slug)}_v*.0.hwpx"))
+    versions = []
+    for f in existing:
+        m = re.search(r'_v(\d+)\.0\.hwpx$', f.name)
+        if m:
+            versions.append(int(m.group(1)))
+    next_ver = max(versions, default=0) + 1
+    out_path = out_dir / f"{title_slug}_v{next_ver}.0.hwpx"
 
     with tempfile.NamedTemporaryFile(
         "w", suffix=".json", delete=False, encoding="utf-8"
