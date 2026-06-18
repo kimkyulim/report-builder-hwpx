@@ -314,8 +314,9 @@ document.getElementById('hwpBtn').addEventListener('click',async()=>{
      setStatus('✗ 실패'); alert('내보내기 실패:\n'+(e.error||res.status));return;}
   const blob=await res.blob();
   const cd=res.headers.get('Content-Disposition')||'';
-  const m=cd.match(/filename="?([^"]+)"?/);
-  const name=m?decodeURIComponent(m[1]):'report.hwpx';
+  const rfc=cd.match(/filename\*=UTF-8''([^\s;]+)/i);
+  const plain=cd.match(/filename="?([^";\r\n]+)"?/);
+  const name=rfc?decodeURIComponent(rfc[1]):(plain?plain[1].trim():'report.hwpx');
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
   a.download=name; a.click(); URL.revokeObjectURL(a.href);
   setStatus('✓ 다운로드 완료');

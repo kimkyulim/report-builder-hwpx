@@ -70,13 +70,13 @@ def api_export():
     out_dir = SKILL_DIR / "output"
     out_dir.mkdir(exist_ok=True)
     raw_title = data.get("title") or data.get("topic") or "report"
-    title_slug = re.sub(r'[\\/:*?"<>|]', '_', raw_title).strip()
-    existing = list(out_dir.glob(f"{re.escape(title_slug)}_v*.0.hwpx"))
+    title_slug = re.sub(r'[\s\\/:*?"<>|]+', '_', raw_title).strip('_')
     versions = []
-    for f in existing:
-        m = re.search(r'_v(\d+)\.0\.hwpx$', f.name)
-        if m:
-            versions.append(int(m.group(1)))
+    for f in out_dir.glob("*_v*.0.hwpx"):
+        if f.stem.startswith(title_slug + "_v"):
+            m = re.search(r'_v(\d+)\.0$', f.stem)
+            if m:
+                versions.append(int(m.group(1)))
     next_ver = max(versions, default=0) + 1
     out_path = out_dir / f"{title_slug}_v{next_ver}.0.hwpx"
 
