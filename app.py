@@ -97,7 +97,7 @@ def api_export():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--report", help="report.json 경로")
-    ap.add_argument("--port", type=int, default=5000)
+    ap.add_argument("--port", type=int, default=8080)
     args = ap.parse_args()
     if args.report:
         STATE["report_path"] = Path(args.report).resolve()

@@ -152,9 +152,9 @@ Phases 4~4c 완료 후 다음을 계산해 사용자에게 표시한다:
 ### Phase 5: 편집 + HWPX 다운로드 (로컬 웹앱)
 로컬 편집 서버를 실행한다:
 ```bash
-python3 "$SKILL_DIR/app.py" --report "$SKILL_DIR/_workspace/report.json" --port 5057
+python3 "$SKILL_DIR/app.py" --report "$SKILL_DIR/_workspace/report.json" --port 8080
 ```
-사용자에게 안내: **브라우저에서 http://127.0.0.1:5057/ 열기.**
+사용자에게 안내: **브라우저에서 http://127.0.0.1:8080/ 열기.**
 
 편집 화면 기능:
 - 상단 **커버리지 바**: 전체 블록 대비 검증 완료 비율(%) 실시간 표시. 70% 미만이면 빨간색 경고.

@@ -30,8 +30,8 @@ requirements.txt                  flask, lxml, requests
 
 ```bash
 python3 -m pip install --user -r requirements.txt
-python3 app.py --report _workspace/report.json --port 5057
-# 브라우저에서 http://127.0.0.1:5057/ 열기
+python3 app.py --report _workspace/report.json --port 8080
+# 브라우저에서 http://127.0.0.1:8080/ 열기
 ```
 
 ## 원칙
