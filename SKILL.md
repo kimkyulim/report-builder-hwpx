@@ -21,8 +21,8 @@ python3 -c "import lxml, flask, requests" 2>/dev/null
 ```bash
 python3 -m pip install --user --quiet -r "$SKILL_DIR/requirements.txt"
 ```
-`$SKILL_DIR` = 이 SKILL.md가 있는 디렉토리. hwpx 출력은 형제 스킬 `hwpx`의 양식 처리와
-무관하게 이 스킬의 `scripts/section_from_report.py`만으로 완결된다.
+`$SKILL_DIR` = 이 SKILL.md가 있는 디렉토리. hwpx 출력은 이 스킬의
+`scripts/section_from_report.py`만으로 완결된다 (외부 스킬 의존 없음).
 
 ## 데이터 모델 — report.json
 
@@ -52,12 +52,26 @@ python3 -m pip install --user --quiet -r "$SKILL_DIR/requirements.txt"
 ## 워크플로우
 
 ### Phase 1: 입력
-- `주제`(필수), `기간`(기본 8일), `부서명`을 사용자에게 확인. 누락 시 묻는다.
-- `date` = 오늘(YY.MM.DD), `topic_slug` = 파일명용 slug 생성.
+
+**부서명 — 반드시 먼저 묻기 (기본값 없음)**
+주제가 명시되어 있어도 부서명이 없으면 검색을 시작하기 전에 사용자에게 물어본다:
+> "어느 팀/부서 이름으로 보고서를 작성할까요?"
+사용자가 답변할 때까지 Phase 2로 넘어가지 않는다.
+
+**날짜 — 실행 시점 자동 취득 (하드코딩 금지)**
+보고서를 작성하는 시점의 실제 날짜를 Python으로 직접 읽어야 한다:
+```python
+# Windows: python / macOS·Linux: python3
+python -c "from datetime import date; print(date.today().strftime('%y.%m.%d'))"
+```
+출력된 값(예: `26.06.18`)을 `date` 필드에 그대로 사용한다. 대화 맥락에서 날짜를 추측하거나 이전 보고서의 날짜를 재사용하지 않는다.
+
+**그 외 입력**
+- `기간`: 기본 8일 (명시 없으면 묻지 않고 기본값 사용)
+- `topic_slug`: 파일명용 slug 자동 생성 (주제에서 파생)
 
 ### Phase 2: 검색 (뉴스·논문·특허)
-형제 스킬 `search-info-hwpx`의 검색 패턴을 재사용한다 — 3개 검색을 병렬로 수행해
-뉴스/논문/특허 결과를 모으고, URL·제목 유사도로 중복을 제거한다.
+WebSearch를 병렬로 3회 수행해 뉴스/논문/특허 결과를 모으고, URL·제목 유사도로 중복을 제거한다.
 각 결과를 `report.json`의 `sources[]` 항목으로 적재한다(`url`, `title`, `source`, `date`, `type`).
 **이 단계에서 `originalExcerpt`는 비워두고, `verifyStatus`는 `"unchecked"`로 둔다.**
 
