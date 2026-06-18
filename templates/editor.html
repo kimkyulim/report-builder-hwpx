@@ -36,6 +36,10 @@
   .wrap{display:grid;grid-template-columns:1fr 420px;gap:0;height:calc(100vh - 57px)}
   .doc{overflow:auto;padding:24px 28px}
   .side{overflow:auto;border-left:1px solid var(--line);background:var(--panel);padding:18px 20px}
+  .doc-title{font-size:22px;font-weight:700;outline:none;padding:6px 8px;border-radius:8px;
+             margin-bottom:14px;line-height:1.4;border:1px solid transparent}
+  .doc-title:focus{border-color:var(--accent);background:#eef3ff}
+  .doc-title:empty:before{content:'제목 없음';color:var(--sub)}
   .toc{background:var(--panel);border:1px solid var(--line);border-radius:10px;
        padding:12px 16px;margin-bottom:12px}
   .toc b{font-size:13px;color:var(--sub)}
@@ -100,6 +104,7 @@
 
 <div class="wrap">
   <div class="doc">
+    <div class="doc-title" id="docTitle" contenteditable="true"></div>
     <div class="toc"><b>목차</b><ul id="toc"></ul></div>
     <div class="filterbar">
       <span class="flbl">필터:</span>
@@ -154,8 +159,10 @@ function updateCoverage(){
 }
 
 function render(){
-  document.getElementById('topicLabel').textContent =
-     (R.title||'') + '  ·  ' + (R.date||'');
+  document.getElementById('topicLabel').textContent = R.date||'';
+  const titleEl = document.getElementById('docTitle');
+  titleEl.textContent = R.title||'';
+  titleEl.oninput = ()=>{ R.title = titleEl.textContent; dirty(); };
   const toc = document.getElementById('toc'); toc.innerHTML='';
   (R.toc||[]).forEach(t=>{const li=document.createElement('li');li.textContent=t;toc.appendChild(li);});
 
