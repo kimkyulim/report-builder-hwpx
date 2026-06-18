@@ -1,0 +1,122 @@
+<svg width="1200" height="380" viewBox="0 0 1200 380" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="topbar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1f6feb"/>
+      <stop offset="50%" stop-color="#388bfd"/>
+      <stop offset="100%" stop-color="#58a6ff"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#161b22" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="380" fill="#0d1117"/>
+  <rect width="1200" height="380" fill="url(#grid)" opacity="0.8"/>
+
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="1200" height="4" fill="url(#topbar)"/>
+
+  <!-- Title -->
+  <text x="600" y="68" text-anchor="middle" fill="#f0f6fc" font-size="38" font-weight="700"
+        font-family="'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace" letter-spacing="-0.5">
+    report-builder-hwpx
+  </text>
+
+  <!-- Subtitle -->
+  <text x="600" y="102" text-anchor="middle" fill="#8b949e" font-size="16"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+    뉴스 · 논문 · 특허를 검색해 출처 검증된 보고서를 .hwpx 로 자동 생성하는 Claude Code 스킬
+  </text>
+
+  <!-- Divider -->
+  <line x1="80" y1="128" x2="1120" y2="128" stroke="#21262d" stroke-width="1"/>
+
+  <!-- ── Step 1: 검색 ── x=60, w=180, cx=150 -->
+  <rect x="60" y="152" width="180" height="130" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="60" y="152" width="180" height="4" rx="3" fill="#58a6ff"/>
+  <!-- magnifying glass -->
+  <circle cx="150" cy="207" r="19" fill="none" stroke="#58a6ff" stroke-width="2.5"/>
+  <line x1="164" y1="221" x2="175" y2="232" stroke="#58a6ff" stroke-width="3" stroke-linecap="round"/>
+  <text x="150" y="249" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="600"
+        font-family="-apple-system, sans-serif">검색</text>
+  <text x="150" y="267" text-anchor="middle" fill="#6e7681" font-size="11"
+        font-family="-apple-system, sans-serif">뉴스 · 논문 · 특허</text>
+
+  <!-- Arrow 1 -->
+  <line x1="244" y1="217" x2="274" y2="217" stroke="#388bfd" stroke-width="2"/>
+  <polygon points="274,211 284,217 274,223" fill="#388bfd"/>
+
+  <!-- ── Step 2: 작성 ── x=290, w=180, cx=380 -->
+  <rect x="290" y="152" width="180" height="130" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="290" y="152" width="180" height="4" rx="3" fill="#3fb950"/>
+  <!-- document icon -->
+  <rect x="368" y="190" width="24" height="30" rx="3" fill="none" stroke="#3fb950" stroke-width="2.5"/>
+  <line x1="374" y1="200" x2="386" y2="200" stroke="#3fb950" stroke-width="1.8"/>
+  <line x1="374" y1="207" x2="386" y2="207" stroke="#3fb950" stroke-width="1.8"/>
+  <line x1="374" y1="214" x2="382" y2="214" stroke="#3fb950" stroke-width="1.8"/>
+  <text x="380" y="249" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="600"
+        font-family="-apple-system, sans-serif">작성</text>
+  <text x="380" y="267" text-anchor="middle" fill="#6e7681" font-size="11"
+        font-family="-apple-system, sans-serif">목차 · 본문 · 출처 연결</text>
+
+  <!-- Arrow 2 -->
+  <line x1="474" y1="217" x2="504" y2="217" stroke="#388bfd" stroke-width="2"/>
+  <polygon points="504,211 514,217 504,223" fill="#388bfd"/>
+
+  <!-- ── Step 3: 검증 ── x=520, w=180, cx=610 -->
+  <rect x="520" y="152" width="180" height="130" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="520" y="152" width="180" height="4" rx="3" fill="#f0883e"/>
+  <!-- checkmark in circle -->
+  <circle cx="610" cy="207" r="19" fill="none" stroke="#f0883e" stroke-width="2.5"/>
+  <polyline points="600,207 607,215 622,197" fill="none" stroke="#f0883e" stroke-width="2.8"
+            stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="610" y="249" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="600"
+        font-family="-apple-system, sans-serif">검증</text>
+  <text x="610" y="267" text-anchor="middle" fill="#6e7681" font-size="11"
+        font-family="-apple-system, sans-serif">원문 대조 · 수치 확인</text>
+
+  <!-- Arrow 3 -->
+  <line x1="704" y1="217" x2="734" y2="217" stroke="#388bfd" stroke-width="2"/>
+  <polygon points="734,211 744,217 734,223" fill="#388bfd"/>
+
+  <!-- ── Step 4: 편집 ── x=750, w=180, cx=840 -->
+  <rect x="750" y="152" width="180" height="130" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="750" y="152" width="180" height="4" rx="3" fill="#d2a8ff"/>
+  <!-- pencil icon -->
+  <g transform="translate(840, 208)">
+    <rect x="-7" y="-20" width="14" height="28" rx="2" transform="rotate(-30)"
+          fill="none" stroke="#d2a8ff" stroke-width="2.5"/>
+    <polygon points="-5,10 0,20 5,10" transform="rotate(-30)" fill="#d2a8ff"/>
+  </g>
+  <text x="840" y="249" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="600"
+        font-family="-apple-system, sans-serif">편집</text>
+  <text x="840" y="267" text-anchor="middle" fill="#6e7681" font-size="11"
+        font-family="-apple-system, sans-serif">웹 에디터 · 상태 표시</text>
+
+  <!-- Arrow 4 -->
+  <line x1="934" y1="217" x2="964" y2="217" stroke="#388bfd" stroke-width="2"/>
+  <polygon points="964,211 974,217 964,223" fill="#388bfd"/>
+
+  <!-- ── Step 5: .hwpx ── x=980, w=180, cx=1070 -->
+  <rect x="980" y="152" width="180" height="130" rx="10" fill="#161b22" stroke="#388bfd" stroke-width="2"/>
+  <rect x="980" y="152" width="180" height="4" rx="3" fill="url(#topbar)"/>
+  <!-- file with download arrow -->
+  <rect x="1058" y="188" width="24" height="30" rx="3" fill="none" stroke="#58a6ff" stroke-width="2.5"/>
+  <text x="1070" y="209" text-anchor="middle" fill="#58a6ff" font-size="8" font-weight="700"
+        font-family="monospace">HWP</text>
+  <line x1="1070" y1="224" x2="1070" y2="236" stroke="#58a6ff" stroke-width="2.2" stroke-linecap="round"/>
+  <polyline points="1064,231 1070,238 1076,231" fill="none" stroke="#58a6ff" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="1070" y="249" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="600"
+        font-family="-apple-system, sans-serif">.hwpx</text>
+  <text x="1070" y="267" text-anchor="middle" fill="#6e7681" font-size="11"
+        font-family="-apple-system, sans-serif">양식 그대로 다운로드</text>
+
+  <!-- Bottom bar -->
+  <line x1="80" y1="310" x2="1120" y2="310" stroke="#21262d" stroke-width="1"/>
+  <text x="600" y="340" text-anchor="middle" fill="#3d444d" font-size="12"
+        font-family="'SFMono-Regular', 'Consolas', monospace">
+    Claude Code Skill  ·  출처 추적  ·  고유명사·숫자 entity 검증  ·  커버리지 리포트
+  </text>
+</svg>

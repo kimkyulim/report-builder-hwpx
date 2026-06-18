@@ -1,5 +1,7 @@
 # report-builder-hwpx
 
+![report-builder-hwpx](docs/thumbnail.svg)
+
 뉴스·논문·특허를 검색해 **목차·본문 보고서**를 작성하고, 각 문장이 어느 URL의 원문을
 근거로 했는지 **추적·검증**한 뒤, 브라우저에서 직접 **편집**하고 'HWP' 버튼으로
 사용자 양식의 **`.hwpx`로 내려받는** Claude Code 스킬.
