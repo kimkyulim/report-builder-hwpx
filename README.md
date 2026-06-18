@@ -34,11 +34,6 @@ python3 app.py --report _workspace/report.json --port 5057
 # 브라우저에서 http://127.0.0.1:5057/ 열기
 ```
 
-## 의존
-
-같은 환경의 `hwpx` 스킬과 무관하게 단독 동작한다(`section_from_report.py`로 완결).
-HWPX 양식은 `templates/forms/form_default.hwpx`를 교체해 바꿀 수 있다.
-
 ## 원칙
 
 - 가짜 출처·URL·인용을 만들지 않는다. 실제 검색으로 확인된 것만 사용한다.
