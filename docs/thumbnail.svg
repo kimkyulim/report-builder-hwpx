@@ -24,7 +24,7 @@
   </text>
 
   <!-- Subtitle -->
-  <text x="600" y="102" text-anchor="middle" fill="#8b949e" font-size="16"
+  <text x="600" y="102" text-anchor="middle" fill="#c9d1d9" font-size="16" font-weight="500"
         font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
     뉴스 · 논문 · 특허를 검색해 출처 검증된 보고서를 .hwpx 로 자동 생성하는 Claude Code 스킬
   </text>
@@ -38,9 +38,9 @@
   <!-- magnifying glass -->
   <circle cx="150" cy="207" r="19" fill="none" stroke="#58a6ff" stroke-width="2.5"/>
   <line x1="164" y1="221" x2="175" y2="232" stroke="#58a6ff" stroke-width="3" stroke-linecap="round"/>
-  <text x="150" y="249" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="600"
+  <text x="150" y="249" text-anchor="middle" fill="#f0f6fc" font-size="15" font-weight="800"
         font-family="-apple-system, sans-serif">검색</text>
-  <text x="150" y="267" text-anchor="middle" fill="#6e7681" font-size="11"
+  <text x="150" y="267" text-anchor="middle" fill="#adbac7" font-size="12"
         font-family="-apple-system, sans-serif">뉴스 · 논문 · 특허</text>
 
   <!-- Arrow 1 -->
@@ -55,9 +55,9 @@
   <line x1="374" y1="200" x2="386" y2="200" stroke="#3fb950" stroke-width="1.8"/>
   <line x1="374" y1="207" x2="386" y2="207" stroke="#3fb950" stroke-width="1.8"/>
   <line x1="374" y1="214" x2="382" y2="214" stroke="#3fb950" stroke-width="1.8"/>
-  <text x="380" y="249" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="600"
+  <text x="380" y="249" text-anchor="middle" fill="#f0f6fc" font-size="15" font-weight="800"
         font-family="-apple-system, sans-serif">작성</text>
-  <text x="380" y="267" text-anchor="middle" fill="#6e7681" font-size="11"
+  <text x="380" y="267" text-anchor="middle" fill="#adbac7" font-size="12"
         font-family="-apple-system, sans-serif">목차 · 본문 · 출처 연결</text>
 
   <!-- Arrow 2 -->
@@ -71,9 +71,9 @@
   <circle cx="610" cy="207" r="19" fill="none" stroke="#f0883e" stroke-width="2.5"/>
   <polyline points="600,207 607,215 622,197" fill="none" stroke="#f0883e" stroke-width="2.8"
             stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="610" y="249" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="600"
+  <text x="610" y="249" text-anchor="middle" fill="#f0f6fc" font-size="15" font-weight="800"
         font-family="-apple-system, sans-serif">검증</text>
-  <text x="610" y="267" text-anchor="middle" fill="#6e7681" font-size="11"
+  <text x="610" y="267" text-anchor="middle" fill="#adbac7" font-size="12"
         font-family="-apple-system, sans-serif">원문 대조 · 수치 확인</text>
 
   <!-- Arrow 3 -->
@@ -89,9 +89,9 @@
           fill="none" stroke="#d2a8ff" stroke-width="2.5"/>
     <polygon points="-5,10 0,20 5,10" transform="rotate(-30)" fill="#d2a8ff"/>
   </g>
-  <text x="840" y="249" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="600"
+  <text x="840" y="249" text-anchor="middle" fill="#f0f6fc" font-size="15" font-weight="800"
         font-family="-apple-system, sans-serif">편집</text>
-  <text x="840" y="267" text-anchor="middle" fill="#6e7681" font-size="11"
+  <text x="840" y="267" text-anchor="middle" fill="#adbac7" font-size="12"
         font-family="-apple-system, sans-serif">웹 에디터 · 상태 표시</text>
 
   <!-- Arrow 4 -->
@@ -108,14 +108,14 @@
   <line x1="1070" y1="224" x2="1070" y2="236" stroke="#58a6ff" stroke-width="2.2" stroke-linecap="round"/>
   <polyline points="1064,231 1070,238 1076,231" fill="none" stroke="#58a6ff" stroke-width="2.2"
             stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="1070" y="249" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="600"
+  <text x="1070" y="249" text-anchor="middle" fill="#f0f6fc" font-size="15" font-weight="800"
         font-family="-apple-system, sans-serif">.hwpx</text>
-  <text x="1070" y="267" text-anchor="middle" fill="#6e7681" font-size="11"
+  <text x="1070" y="267" text-anchor="middle" fill="#adbac7" font-size="12"
         font-family="-apple-system, sans-serif">양식 그대로 다운로드</text>
 
   <!-- Bottom bar -->
   <line x1="80" y1="310" x2="1120" y2="310" stroke="#21262d" stroke-width="1"/>
-  <text x="600" y="340" text-anchor="middle" fill="#3d444d" font-size="12"
+  <text x="600" y="340" text-anchor="middle" fill="#6e7681" font-size="12"
         font-family="'SFMono-Regular', 'Consolas', monospace">
     Claude Code Skill  ·  출처 추적  ·  고유명사·숫자 entity 검증  ·  커버리지 리포트
   </text>
