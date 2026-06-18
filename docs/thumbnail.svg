@@ -40,7 +40,7 @@
   <line x1="164" y1="221" x2="175" y2="232" stroke="#58a6ff" stroke-width="3" stroke-linecap="round"/>
   <text x="150" y="249" text-anchor="middle" fill="#f0f6fc" font-size="15" font-weight="800"
         font-family="-apple-system, sans-serif">검색</text>
-  <text x="150" y="267" text-anchor="middle" fill="#adbac7" font-size="12"
+  <text x="150" y="267" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="700"
         font-family="-apple-system, sans-serif">뉴스 · 논문 · 특허</text>
 
   <!-- Arrow 1 -->
@@ -57,7 +57,7 @@
   <line x1="374" y1="214" x2="382" y2="214" stroke="#3fb950" stroke-width="1.8"/>
   <text x="380" y="249" text-anchor="middle" fill="#f0f6fc" font-size="15" font-weight="800"
         font-family="-apple-system, sans-serif">작성</text>
-  <text x="380" y="267" text-anchor="middle" fill="#adbac7" font-size="12"
+  <text x="380" y="267" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="700"
         font-family="-apple-system, sans-serif">목차 · 본문 · 출처 연결</text>
 
   <!-- Arrow 2 -->
@@ -73,7 +73,7 @@
             stroke-linecap="round" stroke-linejoin="round"/>
   <text x="610" y="249" text-anchor="middle" fill="#f0f6fc" font-size="15" font-weight="800"
         font-family="-apple-system, sans-serif">검증</text>
-  <text x="610" y="267" text-anchor="middle" fill="#adbac7" font-size="12"
+  <text x="610" y="267" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="700"
         font-family="-apple-system, sans-serif">원문 대조 · 수치 확인</text>
 
   <!-- Arrow 3 -->
@@ -91,7 +91,7 @@
   </g>
   <text x="840" y="249" text-anchor="middle" fill="#f0f6fc" font-size="15" font-weight="800"
         font-family="-apple-system, sans-serif">편집</text>
-  <text x="840" y="267" text-anchor="middle" fill="#adbac7" font-size="12"
+  <text x="840" y="267" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="700"
         font-family="-apple-system, sans-serif">웹 에디터 · 상태 표시</text>
 
   <!-- Arrow 4 -->
@@ -110,13 +110,7 @@
             stroke-linecap="round" stroke-linejoin="round"/>
   <text x="1070" y="249" text-anchor="middle" fill="#f0f6fc" font-size="15" font-weight="800"
         font-family="-apple-system, sans-serif">.hwpx</text>
-  <text x="1070" y="267" text-anchor="middle" fill="#adbac7" font-size="12"
+  <text x="1070" y="267" text-anchor="middle" fill="#f0f6fc" font-size="14" font-weight="700"
         font-family="-apple-system, sans-serif">양식 그대로 다운로드</text>
 
-  <!-- Bottom bar -->
-  <line x1="80" y1="310" x2="1120" y2="310" stroke="#21262d" stroke-width="1"/>
-  <text x="600" y="340" text-anchor="middle" fill="#6e7681" font-size="12"
-        font-family="'SFMono-Regular', 'Consolas', monospace">
-    Claude Code Skill  ·  출처 추적  ·  고유명사·숫자 entity 검증  ·  커버리지 리포트
-  </text>
 </svg>
