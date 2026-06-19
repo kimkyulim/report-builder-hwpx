@@ -61,6 +61,42 @@ def api_save():
     return jsonify({"ok": True})
 
 
+def _lightweight_verify(block_text: str, excerpt: str) -> str:
+    """저장된 originalExcerpt와 수정된 블록 텍스트를 키워드 오버랩으로 비교."""
+    if not excerpt or excerpt.strip() in ('', '(원문 미수집)'):
+        return 'unchecked'
+    def tokenize(t):
+        return {tok.lower() for tok in re.findall(r'[가-힣]{2,}|\d+(?:[.,]\d+)*|\b[A-Za-z]{3,}\b', t)}
+    tt = tokenize(block_text)
+    et = tokenize(excerpt)
+    if not tt or not et:
+        return 'unchecked'
+    overlap = len(tt & et) / len(tt)
+    return 'match' if overlap >= 0.3 else 'unchecked'
+
+
+@app.post("/api/reverify")
+def api_reverify():
+    data = request.get_json(force=True)
+    block_ids = set(data.get("blockIds", []))
+    report = load_report()
+    src_map = {s["id"]: s for s in report.get("sources", [])}
+    updated = {}
+    for sec in report.get("sections", []):
+        for block in sec.get("blocks", []):
+            if block.get("id") not in block_ids:
+                continue
+            for sid in block.get("sources", []):
+                src = src_map.get(sid)
+                if not src:
+                    continue
+                new_status = _lightweight_verify(block.get("text", ""), src.get("originalExcerpt", ""))
+                src["verifyStatus"] = new_status
+                updated[sid] = new_status
+    save_report(report)
+    return jsonify({"ok": True, "updated": updated, "count": len(block_ids)})
+
+
 @app.post("/api/export")
 def api_export():
     data = request.get_json(force=True)

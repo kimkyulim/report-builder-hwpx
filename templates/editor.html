@@ -73,6 +73,8 @@
   .badge.match{color:var(--ok);border-color:#bbf7d0;background:#f0fdf4}
   .badge.mismatch{color:var(--bad);border-color:#fecaca;background:#fef2f2}
   .badge.unchecked{color:var(--warn);border-color:#fde68a;background:#fffbeb}
+  .badge.modified{color:#6366f1;border-color:#c7d2fe;background:#eef2ff}
+  .block-group.modified .block{border-left:3px solid #6366f1}
   .side h2{font-size:14px;margin:0 0 12px}
   .src{border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:14px}
   .src .type{font-size:11px;text-transform:uppercase;color:var(--sub);letter-spacing:.04em}
@@ -127,6 +129,7 @@
 let R = null;
 let activeBlock = null;
 let currentFilter = 'all';
+let dirtyBlocks = new Set();
 
 function setStatus(t){ document.getElementById('status').textContent = t; }
 
@@ -177,11 +180,12 @@ function render(){
     let visibleCount=0;
     (sec.blocks||[]).forEach(b=>{
       const st=blockStatus(b);
+      const effectiveSt=dirtyBlocks.has(b.id)?'modified':st;
       const grp=document.createElement('div');
-      grp.className='block-group '+st;
+      grp.className='block-group '+effectiveSt;
       grp.dataset.blockId=b.id;
 
-      if(currentFilter!=='all' && st!==currentFilter){
+      if(currentFilter!=='all' && effectiveSt!==currentFilter && effectiveSt!=='modified'){
         grp.style.display='none';
       } else {
         visibleCount++;
@@ -192,7 +196,14 @@ function render(){
       bd.innerHTML='<span class="mark">□</span>';
       const tx=document.createElement('div'); tx.className='text'; tx.contentEditable=true;
       tx.textContent=b.text||'';
-      tx.addEventListener('input',()=>{b.text=tx.textContent;dirty();});
+      tx.addEventListener('input',()=>{
+        b.text=tx.textContent;
+        dirtyBlocks.add(b.id);
+        grp.className='block-group modified';
+        const bg=bd.querySelector('.badge');
+        if(bg){bg.className='badge modified';bg.textContent='✎ 수정됨';}
+        dirty();
+      });
       bd.addEventListener('click',()=>selectBlock(b.id));
       bd.appendChild(tx); bd.appendChild(badge);
       grp.appendChild(bd);
@@ -243,6 +254,9 @@ function render(){
 
 function verifyBadge(b){
   const span=document.createElement('span');
+  if(dirtyBlocks.has(b.id)){
+    span.className='badge modified'; span.textContent='✎ 수정됨'; return span;
+  }
   const states=(b.sources||[]).map(id=>(srcById(id)||{}).verifyStatus||'unchecked');
   const ents=(b.entities||[]).map(e=>e.status||'unverified');
   let st='unchecked';
@@ -304,7 +318,24 @@ document.getElementById('saveBtn').addEventListener('click',async()=>{
   setStatus('저장 중…');
   await fetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json'},
      body:JSON.stringify(R)});
-  setStatus('✓ 저장됨');
+  if(dirtyBlocks.size>0){
+    setStatus('재검증 중…');
+    const ids=[...dirtyBlocks];
+    const res=await fetch('/api/reverify',{method:'POST',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({blockIds:ids})});
+    const result=await res.json();
+    if(result.updated){
+      Object.entries(result.updated).forEach(([sid,status])=>{
+        const src=srcById(sid); if(src) src.verifyStatus=status;
+      });
+    }
+    dirtyBlocks.clear();
+    render();
+    if(activeBlock) selectBlock(activeBlock);
+    setStatus(`✓ 저장 + ${ids.length}개 블록 재검증 완료`);
+  } else {
+    setStatus('✓ 저장됨');
+  }
 });
 document.getElementById('hwpBtn').addEventListener('click',async()=>{
   setStatus('HWPX 생성 중…');
